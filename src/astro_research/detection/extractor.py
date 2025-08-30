@@ -140,7 +140,13 @@ class SourceExtractor:
                     ra = dec = 0.0
                 
                 flux = float(obj['flux'])
-                flux_err = float(obj['fluxerr']) if obj['fluxerr'] > 0 else flux / 10
+                # Handle different field names for flux error
+                if 'fluxerr' in obj.dtype.names:
+                    flux_err = float(obj['fluxerr']) if obj['fluxerr'] > 0 else flux / 10
+                elif 'flux_err' in obj.dtype.names:
+                    flux_err = float(obj['flux_err']) if obj['flux_err'] > 0 else flux / 10
+                else:
+                    flux_err = flux / 10  # Default to 10% error
                 
                 magnitude = -2.5 * np.log10(max(flux, 1e-10)) + 25.0
                 mag_err = 2.5 * flux_err / (flux * np.log(10)) if flux > 0 else 99.0

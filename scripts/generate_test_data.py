@@ -69,7 +69,7 @@ def create_fits_header(obs_time, ra_center=150.0, dec_center=30.0, pixel_scale=0
     header['OBJECT'] = 'Test Field'
     header['EXPTIME'] = 300.0
     header['FILTER'] = 'r'
-    header['DATE-OBS'] = obs_time.iso
+    header['DATE-OBS'] = obs_time.isot  # Use ISOT format instead of ISO
     header['MJD-OBS'] = obs_time.mjd
     
     # WCS information
