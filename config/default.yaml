@@ -1,0 +1,94 @@
+# Default configuration for the Asteroid Detection Pipeline
+
+# Processing configuration
+processing:
+  min_detections: 3              # Minimum detections required for a valid track
+  max_velocity: 10.0             # Maximum allowed velocity (arcsec/sec)
+  detection_threshold: 5.0       # Detection threshold in sigma units
+  alignment_tolerance: 2.0       # Star alignment tolerance in pixels
+  tracking_radius: 10.0          # Search radius for linking detections (arcsec)
+  min_snr: 5.0                   # Minimum signal-to-noise ratio
+  use_ml_validation: false       # Enable machine learning validation
+  parallel_workers: 4            # Number of parallel processing workers
+
+# Data download configuration
+download:
+  default_survey: "ztf"          # Default survey source
+  enabled_surveys: ["ztf"]       # List of enabled survey sources
+  data_directory: "./data"       # Directory to store downloaded data
+  cache_directory: "./data/.cache" # Cache directory for downloaded metadata
+  timeout_seconds: 60            # HTTP request timeout
+  retry_attempts: 3              # Number of retry attempts for failed downloads
+
+# Image preprocessing configuration
+preprocessing:
+  subtract_background: true      # Perform background subtraction
+  align_images: true             # Align images to reference frame
+  reference_frame_index: 0       # Index of reference frame for alignment
+  sigma_clipping: 3.0            # Sigma clipping threshold for statistics
+
+# Source detection configuration
+detection:
+  extractor: "sep"               # Source extraction method (sep)
+  min_area: 5                    # Minimum area in pixels for detection
+  deblend_nthresh: 32            # Number of deblending thresholds
+  deblend_cont: 0.005            # Minimum contrast ratio for deblending
+  clean_detections: true         # Clean spurious detections
+
+# Object tracking configuration
+tracking:
+  linking_algorithm: "dbscan"    # Linking algorithm (dbscan, nearest_neighbor)
+  time_tolerance_hours: 1.0      # Maximum time gap for linking (hours)
+  position_tolerance_arcsec: 10.0 # Position tolerance for linking (arcsec)
+  min_track_length: 3            # Minimum number of detections per track
+
+# Output configuration
+output:
+  default_format: "mpc"          # Default output format (mpc, json, csv)
+  save_plots: true               # Generate visualization plots
+  plot_format: "html"            # Plot format (html, png, pdf)
+  generate_report: true          # Generate summary report
+  output_directory: "./output"   # Default output directory
+
+# Logging configuration
+logging:
+  level: "INFO"                  # Log level (DEBUG, INFO, WARNING, ERROR)
+  log_file: null                 # Log file path (null for no file logging)
+  console_output: true           # Enable console output
+
+# Survey-specific configuration
+surveys:
+  ztf:
+    base_url: "https://irsa.ipac.caltech.edu/ibe/data/ztf/products/sci"
+    filters: ["zg", "zr", "zi"]
+    max_results: 1000
+    
+  atlas:
+    base_url: "https://atlas.fallingstar.com/api"
+    filters: ["c", "o"]
+    max_results: 500
+    
+  panstarrs:
+    base_url: "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs"
+    filters: ["g", "r", "i", "z", "y"]
+    max_results: 1000
+
+# Observatory configuration (for real-time monitoring)
+observatory:
+  name: "Test Observatory"
+  code: "T12"                    # MPC observatory code
+  latitude: -30.169              # Observatory latitude (degrees)
+  longitude: -70.804             # Observatory longitude (degrees)
+  elevation: 2400                # Observatory elevation (meters)
+  
+# Machine learning configuration (if enabled)
+machine_learning:
+  model_path: "./models/asteroid_classifier.pkl"
+  feature_set: ["velocity", "magnitude", "trajectory_rms", "num_detections"]
+  confidence_threshold: 0.8
+  
+# Performance tuning
+performance:
+  max_memory_gb: 8               # Maximum memory usage in GB
+  chunk_size: 100                # Processing chunk size
+  enable_gpu: false              # Enable GPU acceleration if available
